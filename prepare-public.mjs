@@ -16,4 +16,7 @@ for (const image of images) {
 html = html.replace('img-src data: blob:', "img-src data: blob: https://abkx12-hub.github.io");
 html = html.replace(/<img(?![^>]*loading=)/g, '<img loading="lazy"');
 await fs.writeFile('wardrobe.html', html);
+const version = createHash('sha256').update(html).digest('hex').slice(0, 12);
+const index = await fs.readFile('index.html', 'utf8');
+await fs.writeFile('index.html', index.replace(/src="wardrobe\.html(?:\?[^"]*)?"/, `src="wardrobe.html?v=${version}"`));
 console.log(JSON.stringify({ images: images.length, pageKB: Math.round(Buffer.byteLength(html) / 1024) }));
